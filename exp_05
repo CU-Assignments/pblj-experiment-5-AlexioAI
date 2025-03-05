@@ -1,0 +1,218 @@
+                                                                   ****Ques 1: Student Serialization & Deserialization****
+    CODE :
+            import java.io.*;
+            
+            // Student class implementing Serializable
+            class Student implements Serializable {
+                private static final long serialVersionUID = 1L;
+                private int id;
+                private String name;
+                private double gpa;
+            
+                public Student(int id, String name, double gpa) {
+                    this.id = id;
+                    this.name = name;
+                    this.gpa = gpa;
+                }
+            
+                public void display() {
+                    System.out.println("Student ID: " + id);
+                    System.out.println("Name: " + name);
+                    System.out.println("GPA: " + gpa);
+                }
+            }
+            
+            public class StudentSerialization {
+                private static final String FILE_NAME = "student.ser";
+            
+                // Serialize the Student object
+                public static void serializeStudent(Student student) {
+                    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+                        oos.writeObject(student);
+                        System.out.println("Student object serialized successfully.");
+                    } catch (IOException e) {
+                        System.out.println("Error during serialization: " + e.getMessage());
+                    }
+                }
+            
+                // Deserialize the Student object
+                public static Student deserializeStudent() {
+                    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+                        return (Student) ois.readObject();
+                    } catch (FileNotFoundException e) {
+                        System.out.println("File not found: " + e.getMessage());
+                    } catch (IOException | ClassNotFoundException e) {
+                        System.out.println("Error during deserialization: " + e.getMessage());
+                    }
+                    return null;
+                }
+            
+                public static void main(String[] args) {
+                    Student student = new Student(101, "John Doe", 3.8);
+                    serializeStudent(student);
+            
+                    Student deserializedStudent = deserializeStudent();
+                    if (deserializedStudent != null) {
+                        System.out.println("\nDeserialized Student Details:");
+                        deserializedStudent.display();
+                    }
+                }
+            }
+
+  OUTPUT :
+            First Run (Serialization)
+              Student object serialized successfully.
+            Second Run (Deserialization)
+              Student object serialized successfully.
+              Deserialized Student Details:
+              Student ID: 101
+              Name: John Doe
+              GPA: 3.8
+
+
+                                                                  ****Ques 2:  Menu-Based Employee Management System****
+
+  CODE : 
+          import java.io.*;
+          import java.util.Scanner;
+          
+          // Employee class implementing Serializable
+          class Employee implements Serializable {
+              private static final long serialVersionUID = 1L;
+              private int id;
+              private String name;
+              private String designation;
+              private double salary;
+          
+              public Employee(int id, String name, String designation, double salary) {
+                  this.id = id;
+                  this.name = name;
+                  this.designation = designation;
+                  this.salary = salary;
+              }
+          
+              public void display() {
+                  System.out.printf("ID: %d, Name: %s, Designation: %s, Salary: %.2f%n", id, name, designation, salary);
+              }
+          }
+          
+          public class EmployeeManagement {
+              private static final String FILE_NAME = "employees.dat";
+          
+              // Add employee to file
+              public static void addEmployee(Employee employee) {
+                  try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME, true))) {
+                      oos.writeObject(employee);
+                      System.out.println("Employee added successfully.\n");
+                  } catch (IOException e) {
+                      System.out.println("Error writing to file: " + e.getMessage());
+                  }
+              }
+          
+              // Display all employees from file
+              public static void displayEmployees() {
+                  try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+                      while (true) {
+                          try {
+                              Employee emp = (Employee) ois.readObject();
+                              emp.display();
+                          } catch (EOFException e) {
+                              break;
+                          }
+                      }
+                  } catch (FileNotFoundException e) {
+                      System.out.println("No employees found.");
+                  } catch (IOException | ClassNotFoundException e) {
+                      System.out.println("Error reading file: " + e.getMessage());
+                  }
+              }
+          
+              public static void main(String[] args) {
+                  Scanner scanner = new Scanner(System.in);
+                  int choice;
+                  
+                  do {
+                      System.out.println("\n1. Add Employee");
+                      System.out.println("2. Display All Employees");
+                      System.out.println("3. Exit");
+                      System.out.print("Enter your choice: ");
+                      choice = scanner.nextInt();
+                      scanner.nextLine(); // Consume newline
+          
+                      switch (choice) {
+                          case 1:
+                              System.out.print("Enter Employee ID: ");
+                              int id = scanner.nextInt();
+                              scanner.nextLine();
+                              System.out.print("Enter Name: ");
+                              String name = scanner.nextLine();
+                              System.out.print("Enter Designation: ");
+                              String designation = scanner.nextLine();
+                              System.out.print("Enter Salary: ");
+                              double salary = scanner.nextDouble();
+          
+                              Employee employee = new Employee(id, name, designation, salary);
+                              addEmployee(employee);
+                              break;
+          
+                          case 2:
+                              System.out.println("\nEmployee List:");
+                              displayEmployees();
+                              break;
+          
+                          case 3:
+                              System.out.println("Exiting program...");
+                              break;
+          
+                          default:
+                              System.out.println("Invalid choice! Please try again.");
+                      }
+                  } while (choice != 3);
+          
+                  scanner.close();
+              }
+          }
+
+  OUTPUT :
+            1. Add Employee
+            2. Display All Employees
+            3. Exit
+            Enter your choice: 1
+            Enter Employee ID: 101
+            Enter Name: Alice Johnson
+            Enter Designation: Software Engineer
+            Enter Salary: 75000
+            
+            Employee added successfully.
+            
+            1. Add Employee
+            2. Display All Employees
+            3. Exit
+            Enter your choice: 1
+            Enter Employee ID: 102
+            Enter Name: Bob Smith
+            Enter Designation: Project Manager
+            Enter Salary: 95000
+            
+            Employee added successfully.
+
+
+LEARNING OUTCOMES : 
+1. Understanding Serialization and Deserialization in Java
+Learned how to use Serializable interface to convert objects into a byte stream and store them in a file.
+Understood the process of reading the stored byte stream and reconstructing the original object.
+
+2. Exception Handling in File Operations
+Gained experience in handling exceptions like FileNotFoundException, IOException, and ClassNotFoundException when working with file operations.
+
+3. Object-Oriented Programming (OOP) Concepts
+Applied OOP principles like encapsulation, constructors, and method usage in the Student and Employee classes.
+
+4. File Handling in Java
+Practiced working with FileOutputStream, FileInputStream, ObjectOutputStream, and ObjectInputStream for reading and writing objects to files.
+
+5. Implementing a Menu-Driven Console Application
+Created an interactive menu-based application that allows users to perform different operations dynamically.
+
+6. Handling User Input in Java
+Used Scanner to take user input for different data types like int, double, and String, and handled incorrect input scenarios.
